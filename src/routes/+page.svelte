@@ -103,7 +103,7 @@
 				<div class="card p-4 text-left w-full mx-auto max-w-md">
 					<div class="card-content">
 						<div class="card-title text-3xl">{post.title}</div>
-						{#if xssEnabled}
+						{#if $xssEnabled}
 							<div class="card-body mt-3">{@html post.body}</div>
 						{:else}
 							<div class="card-body mt-3">{post.body}</div>
