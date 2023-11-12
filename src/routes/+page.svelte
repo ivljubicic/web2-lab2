@@ -8,7 +8,6 @@
 	let body = '';
 
 	let xssEnabled: boolean = false;
-	let bacToggle: boolean = false;
 
 	$: isFormValid = title.trim() !== '' && body.trim() !== '';
 
@@ -40,7 +39,10 @@
 
 <div class="container h-full flex m-10">
 	<div class="space-y-10 text-center flex flex-col items-start">
-		<h2 class="h2">XSS</h2>
+		<div class="flex flex-row gap-4">
+			<h2 class="h2">XSS</h2>
+			<a href="/bac" class="inline-block h2 text-gray-500">BAC</a>
+		</div>
 
 		<div class="flex flex-row gap-5">
 			<h3 class="text-xl">XSS enabled:</h3>
@@ -83,18 +85,22 @@
 			</div>
 		{/if}
 
-		{#each data.posts as post}
-			<div class="card p-4 text-left w-full mx-auto max-w-md">
-				<div class="card-content">
-					<div class="card-title text-3xl">{post.title}</div>
-					{#if xssEnabled}
-						<div class="card-body mt-3">{@html post.body}</div>
-					{:else}
-						<div class="card-body mt-3">{post.body}</div>
-					{/if}
+		{#if data.posts.length === 0}
+			<p>No posts currently.</p>
+		{:else}
+			{#each data.posts as post}
+				<div class="card p-4 text-left w-full mx-auto max-w-md">
+					<div class="card-content">
+						<div class="card-title text-3xl">{post.title}</div>
+						{#if xssEnabled}
+							<div class="card-body mt-3">{@html post.body}</div>
+						{:else}
+							<div class="card-body mt-3">{post.body}</div>
+						{/if}
+					</div>
 				</div>
-			</div>
-		{/each}
+			{/each}
+		{/if}
 	</div>
 </div>
 
