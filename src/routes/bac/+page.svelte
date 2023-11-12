@@ -7,7 +7,6 @@
 	import { localStorageStore } from '@skeletonlabs/skeleton';
 
 	export let data: PageData;
-	export let user: User;
 
 	const bacToggle: Writable<boolean> = localStorageStore('bacEnabled', false);
 
@@ -39,23 +38,27 @@
 
 		<h1 class="text-2xl">Delete posts</h1>
 
-		{#if bacToggle}
-			{#each data.posts as post}
-				<div class="group relative card p-4 text-left w-full mx-auto max-w-md">
-					{#if true}
-						<!-- Assuming isAdmin is a reactive variable that checks if the user is an admin -->
-						<div class="absolute top-2 right-2 invisible group-hover:visible">
-							<button class="text-white bg-red-500 p-2" on:click={() => deletePost(post.id)}>
-								&times; <!-- This is the X button -->
-							</button>
+		{#if $bacToggle}
+			{#if data.posts.length === 0}
+				<p>No posts currently.</p>
+			{:else}
+				{#each data.posts as post}
+					<div class="group relative card p-4 text-left w-full mx-auto max-w-md">
+						{#if true}
+							<!-- Assuming isAdmin is a reactive variable that checks if the user is an admin -->
+							<div class="absolute top-2 right-2 invisible group-hover:visible">
+								<button class="text-white bg-red-500 p-2" on:click={() => deletePost(post.id)}>
+									&times; <!-- This is the X button -->
+								</button>
+							</div>
+						{/if}
+						<div class="card-content">
+							<div class="card-title text-3xl">{post.title}</div>
+							<div class="card-body mt-3">{post.body}</div>
 						</div>
-					{/if}
-					<div class="card-content">
-						<div class="card-title text-3xl">{post.title}</div>
-						<div class="card-body mt-3">{post.body}</div>
 					</div>
-				</div>
-			{/each}
+				{/each}
+			{/if}
 		{:else}
 			<h1 class="text-3xl text-red-500">You are not allowed to delete posts</h1>
 		{/if}
