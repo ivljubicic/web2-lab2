@@ -3,11 +3,13 @@
 	import type { PageData } from './$types';
 	import type { User } from '@supabase/supabase-js';
 	import { supabase } from '$lib/supabaseClient';
+	import type { Writable } from 'svelte/store';
+	import { localStorageStore } from '@skeletonlabs/skeleton';
 
 	export let data: PageData;
 	export let user: User;
 
-	let bacToggle: boolean = false;
+	const bacToggle: Writable<boolean> = localStorageStore('bacEnabled', false);
 
 	async function deletePost(postId: number) {
 		if (!confirm('Are you sure you want to delete this post?')) return;
@@ -32,7 +34,7 @@
 
 		<div class="flex flex-row gap-5">
 			<h3 class="text-xl">BAC enabled:</h3>
-			<SlideToggle name="xssSlide" bind:checked={bacToggle} />
+			<SlideToggle name="xssSlide" bind:checked={$bacToggle} />
 		</div>
 
 		<h1 class="text-2xl">Delete posts</h1>

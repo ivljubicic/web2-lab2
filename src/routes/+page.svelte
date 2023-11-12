@@ -2,12 +2,19 @@
 <script lang="ts">
 	import { supabase } from '$lib/supabaseClient';
 	import { SlideToggle } from '@skeletonlabs/skeleton';
-	export let data;
+	import type { PageData } from './$types';
+	import type { Posts } from '$lib/db/types';
+	import type { Writable } from 'svelte/store';
+	import { localStorageStore } from '@skeletonlabs/skeleton';
+
+	export let data: PageData;
 
 	let title = '';
 	let body = '';
 
-	let xssEnabled: boolean = false;
+	const xssEnabled: Writable<boolean> = localStorageStore('xssEnabled', false);
+
+	// Watch for changes to xssEnabled and store in localStorage
 
 	$: isFormValid = title.trim() !== '' && body.trim() !== '';
 
@@ -17,12 +24,14 @@
 		showForm = !showForm;
 	}
 
+	function updatePosts(post: Posts) {
+		data.posts = [post, ...data.posts];
+	}
+
 	async function handleSubmit() {
 		if (!isFormValid) return;
-		const post = { title, body, created_at: new Date().toISOString() };
-		const { data, error } = await supabase
-			.from('posts') // Replace 'posts' with your actual table name
-			.insert([post]);
+		const post: Posts = { title, body, created_at: new Date().toISOString() };
+		const { data, error } = await supabase.from('posts').insert([post]);
 
 		if (error) {
 			console.error('Error submitting post:', error);
@@ -30,7 +39,9 @@
 		}
 		console.log('Post submitted:', data);
 
-		// Reset form
+		// add the post to the local posts array
+		updatePosts(post);
+
 		title = '';
 		body = '';
 		showForm = false;
@@ -46,7 +57,7 @@
 
 		<div class="flex flex-row gap-5">
 			<h3 class="text-xl">XSS enabled:</h3>
-			<SlideToggle name="xssSlide" bind:checked={xssEnabled} />
+			<SlideToggle name="xssSlide" bind:checked={$xssEnabled} />
 		</div>
 
 		<button type="button" class="btn variant-filled" on:click={toggleForm}>Add Post</button>

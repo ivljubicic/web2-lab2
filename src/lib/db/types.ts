@@ -6,28 +6,20 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[]
 
+export interface Posts {
+  body: string | null
+  created_at: string
+  id: number
+  title: string | null
+}
+
 export interface Database {
   public: {
     Tables: {
       posts: {
-        Row: {
-          body: string | null
-          created_at: string
-          id: number
-          title: string | null
-        }
-        Insert: {
-          body?: string | null
-          created_at?: string
-          id?: number
-          title?: string | null
-        }
-        Update: {
-          body?: string | null
-          created_at?: string
-          id?: number
-          title?: string | null
-        }
+        Row: Posts
+        Insert: Partial<Posts>
+        Update: Partial<Posts>
         Relationships: []
       }
       profiles: {
